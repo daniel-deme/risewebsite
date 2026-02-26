@@ -45,7 +45,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           # Állítsd a subdomain dokumentumgyökerére! Pl. /public_html vagy /subdomains/riseengine.danieldeme.com/public_html
           server-dir: /
-          local-dir: ./dist
+          local-dir: ./dist/
           # Törli a szerveren a régi fájlokat (pl. src/, régi index), így csak a build kimenet marad
           dangerous-clean-slate: true
           exclude: |
