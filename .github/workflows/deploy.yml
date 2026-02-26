@@ -13,14 +13,41 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Verify build output
+        run: |
+          test -f dist/index.html || (echo "ERROR: dist/index.html missing" && exit 1)
+          ! grep -q "main.tsx" dist/index.html || (echo "ERROR: dist/index.html must not reference main.tsx (deploy built output, not source)" && exit 1)
+          echo "Build OK: dist ready for deploy"
+
+      # Segít megtalálni, hova kerültek a fájlok: FTP-n keress rá erre a fájlra
+      - name: Add deploy marker
+        run: |
+          echo "Deployed at $(date -u +%Y-%m-%dT%H:%MZ) - if you see this on the server, the upload reached this folder" > dist/deploy-version.txt
+          echo "index.html script tag: $(grep -o 'src="[^"]*"' dist/index.html)" >> dist/deploy-version.txt
+
       - name: Upload via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          # Állítsd a subdomain dokumentumgyökerére! Pl. /public_html vagy /subdomains/riseengine.danieldeme.com/public_html
           server-dir: /
-          local-dir: ./
+          local-dir: ./dist
+          # Törli a szerveren a régi fájlokat (pl. src/, régi index), így csak a build kimenet marad
+          dangerous-clean-slate: true
           exclude: |
             **/.git*
             **/.github/**
