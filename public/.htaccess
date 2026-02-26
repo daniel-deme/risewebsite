@@ -1,0 +1,7 @@
+# Ensure correct MIME types for module scripts and assets
+# (Fixes "Expected a JavaScript module script but server responded with MIME type """ errors)
+<IfModule mod_mime.c>
+  AddType application/javascript .js .mjs
+  AddType text/css .css
+  AddType application/json .json
+</IfModule>
