@@ -1,11 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import svgPaths from "./svg-gf1lw988da";
 import goLogo from "../assets/go-logo.svg?url";
 import grafanaLogo from "../assets/grafana-logo.svg?url";
 import ubiquitiLogo from "../assets/ubiquiti-logo.svg?url";
 import schneiderLogo from "../assets/schneider-logo.svg?url";
 import revolutionPiLogo from "../assets/revolutionpi-logo.svg?url";
-import mobileFlowUrl from "../assets/mobile-flow.svg?url";
 
 const CONTACT_EMAIL = "info@riseengine.io";
 const CONTACT_HREF = `mailto:${CONTACT_EMAIL}`;
@@ -87,36 +86,89 @@ const HERO_FLOWS_PATHS: { d: string; stroke: string; opacity: number }[] = [
   { d: "M731 511.503C747.583 510.169 763.214 508.864 779.708 507.561C1078.61 503.536 1339.08 398.165 1558.08 209.462C1570.42 199.64 1582.6 189.804 1595.31 179.487C1625.44 223.496 1655.56 267.504 1685.69 311.513C1670.94 319.993 1656.73 327.985 1642.33 335.975C1389.22 493.84 1065.25 563.054 779.693 515.561C763.204 514.197 747.583 512.836 731 511.503Z", stroke: "#28536B", opacity: 0.9 },
 ];
 
+const FLOW_MIN_DURATION = 2;
+const FLOW_MAX_DURATION = 8;
+const FLOW_MIN_INTENSITY = 0.25;
+const FLOW_MAX_INTENSITY = 0.4;
+
+function randomBetween(min: number, max: number) {
+  return Math.random() * (max - min) + min;
+}
+
 function HeroFlowsIllustration() {
+  const flowVariants = useMemo(
+    () =>
+      HERO_FLOWS_PATHS.map(() => {
+        const duration = Number(randomBetween(FLOW_MIN_DURATION, FLOW_MAX_DURATION).toFixed(2));
+        const peakOpacity = Number(randomBetween(FLOW_MIN_INTENSITY, FLOW_MAX_INTENSITY).toFixed(2));
+        const edgeOpacity = Number((peakOpacity * 0.42).toFixed(2));
+        const delay = Number(randomBetween(0, 1.8).toFixed(2));
+
+        return { duration, delay, peakOpacity, edgeOpacity };
+      }),
+    [],
+  );
+
   return (
     <div
       className="flex items-center justify-center w-full h-full min-h-[160px] md:min-h-[480px] overflow-visible"
       style={{ isolation: "isolate" }}
       data-name="hero-flows-illustration"
     >
-      <div
-        className="block md:hidden w-full h-[160px] overflow-visible"
-        aria-hidden
-      >
-        <img
-          src={mobileFlowUrl}
-          alt=""
-          className="block w-full h-full object-contain object-center origin-center scale-[6]"
-          style={{ mixBlendMode: "hard-light" }}
-          loading="eager"
-          decoding="async"
-        />
-      </div>
       <svg
-        className="hidden md:block w-full min-w-0 md:min-w-[1440px] h-auto max-h-[2240px] sm:max-h-[2720px]"
+        className="w-full min-w-0 md:min-w-[1440px] h-auto max-h-[2240px] sm:max-h-[2720px]"
         viewBox="0 0 1440 1023"
         fill="none"
         preserveAspectRatio="xMidYMid meet"
       >
+        <defs>
+          {HERO_FLOWS_PATHS.map((_, i) => {
+            const isLeft = i < 7;
+            const id = `flowPulse-${i}`;
+            const variant = flowVariants[i];
+            // Run fully across each stripe and end outside it to avoid restart flash.
+            const from = isLeft ? "-1.2 0" : "1.2 0";
+            const to = isLeft ? "1.2 0" : "-1.2 0";
+
+            return (
+              <linearGradient
+                key={id}
+                id={id}
+                gradientUnits="objectBoundingBox"
+                x1={isLeft ? 0 : 1}
+                y1={0.5}
+                x2={isLeft ? 1 : 0}
+                y2={0.5}
+              >
+                <stop offset="0" stopColor="#FFFFFF" stopOpacity="0" />
+                <stop offset="0.35" stopColor="#FFFFFF" stopOpacity={variant.edgeOpacity} />
+                <stop offset="0.52" stopColor="#BCEBFF" stopOpacity={variant.peakOpacity} />
+                <stop offset="0.68" stopColor="#FFFFFF" stopOpacity={variant.edgeOpacity} />
+                <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
+                <animateTransform
+                  attributeName="gradientTransform"
+                  type="translate"
+                  values={`${from}; ${to}`}
+                  dur={`${variant.duration}s`}
+                  begin={`${variant.delay}s`}
+                  repeatCount="indefinite"
+                />
+              </linearGradient>
+            );
+          })}
+        </defs>
+
         {HERO_FLOWS_PATHS.map(({ d, stroke, opacity }, i) => (
-          <g key={i} opacity={opacity} style={{ mixBlendMode: "hard-light" }}>
-            <path d={d} fill={stroke} />
-          </g>
+          <path key={`base-${i}`} d={d} fill={stroke} opacity={opacity} style={{ mixBlendMode: "hard-light" }} />
+        ))}
+        {HERO_FLOWS_PATHS.map(({ d }, i) => (
+          <path
+            key={`pulse-${i}`}
+            d={d}
+            fill={`url(#flowPulse-${i})`}
+            opacity={0.9}
+            style={{ mixBlendMode: "screen" }}
+          />
         ))}
         <circle cx="720" cy="511.5" r="5.5" fill="white" stroke="#08344C" strokeWidth={5} />
       </svg>
