@@ -1,5 +1,30 @@
 import { useState, useEffect, useRef } from "react";
 import svgPaths from "./svg-gf1lw988da";
+import goLogo from "../assets/go-logo.svg?url";
+import grafanaLogo from "../assets/grafana-logo.svg?url";
+import ubiquitiLogo from "../assets/ubiquiti-logo.svg?url";
+import schneiderLogo from "../assets/schneider-logo.svg?url";
+import revolutionPiLogo from "../assets/revolutionpi-logo.svg?url";
+import mobileFlowUrl from "../assets/mobile-flow.svg?url";
+
+const CONTACT_EMAIL = "info@riseengine.io";
+const CONTACT_HREF = `mailto:${CONTACT_EMAIL}`;
+
+const TECH_STACK_URLS: (string | null)[] = [
+  "https://go.dev/",
+  "https://grafana.com/",
+  "https://ui.com/",
+  "https://www.se.com/",
+  "https://revolutionpi.com/",
+];
+
+const TECH_STACK_ITEMS: { src: string; alt: string }[] = [
+  { src: goLogo, alt: "Go" },
+  { src: grafanaLogo, alt: "Grafana Labs" },
+  { src: ubiquitiLogo, alt: "Ubiquiti" },
+  { src: schneiderLogo, alt: "Schneider Electric" },
+  { src: revolutionPiLogo, alt: "Revolution Pi" },
+];
 
 function Head() {
   return <div className="h-[80px] pointer-events-auto sticky top-0 w-full" data-name="head" />;
@@ -7,9 +32,14 @@ function Head() {
 
 function Cta() {
   return (
-    <div className="bg-white content-stretch flex flex-col items-center justify-center p-[12px] relative rounded-[2px] shrink-0 transition-all duration-300 hover:bg-[#FD8551] hover:scale-110 cursor-pointer" data-name="cta">
-      <p className="font-['Rajdhani',sans-serif] font-bold leading-[normal] not-italic relative shrink-0 text-[14px] text-black tracking-[0.28px] uppercase">book a meeting</p>
-    </div>
+    <a
+      id="hero-contact-cta"
+      className="bg-white content-stretch flex flex-col items-center justify-center p-[12px] relative rounded-[2px] shrink-0 transition-all duration-300 hover:bg-[#FD8551] hover:scale-110 cursor-pointer"
+      data-name="cta"
+      href={CONTACT_HREF}
+    >
+      <p className="font-['Rajdhani',sans-serif] font-bold leading-[normal] not-italic relative shrink-0 text-[14px] text-black tracking-[0.28px] uppercase">contact us</p>
+    </a>
   );
 }
 
@@ -28,8 +58,13 @@ function HeroLogoBlock() {
 function HeroBlock1() {
   return (
     <div className="relative z-10 text-center w-full max-w-[703px] mb-8" data-name="hero-block-1">
-      <p className="font-['Be Vietnam Pro',sans-serif] font-light text-white whitespace-pre-wrap leading-tight text-[40px] sm:text-[80px] sm:leading-[80px]" style={{ letterSpacing: '-0.03em' }}>
-        {`Integrate.\nCentralize.\nSimplify.`}
+      <p
+        className="font-['Be Vietnam Pro',sans-serif] font-light text-white flex flex-col -space-y-2 md:space-y-0 items-center justify-center leading-[normal] text-[56px] md:text-[80px] md:leading-[80px]"
+        style={{ letterSpacing: "-0.03em" }}
+      >
+        <span>Integrate.</span>
+        <span>Centralize.</span>
+        <span>Simplify.</span>
       </p>
     </div>
   );
@@ -52,66 +87,37 @@ const HERO_FLOWS_PATHS: { d: string; stroke: string; opacity: number }[] = [
   { d: "M731 511.503C747.583 510.169 763.214 508.864 779.708 507.561C1078.61 503.536 1339.08 398.165 1558.08 209.462C1570.42 199.64 1582.6 189.804 1595.31 179.487C1625.44 223.496 1655.56 267.504 1685.69 311.513C1670.94 319.993 1656.73 327.985 1642.33 335.975C1389.22 493.84 1065.25 563.054 779.693 515.561C763.204 514.197 747.583 512.836 731 511.503Z", stroke: "#28536B", opacity: 0.9 },
 ];
 
-const FLOW_SHINE_DURATIONS = [5.5, 6, 4.5, 5, 6.5, 4, 5.5, 5, 4.5, 6, 5.5, 4, 6.5, 5];
-const FLOW_SHINE_DELAYS = [0, 1.2, 2.6, 0.4, 1.8, 2.9, 0.7, 2.1, 0.3, 1.5, 2.4, 0.9, 1.1, 2.2];
-
 function HeroFlowsIllustration() {
   return (
     <div
-      className="flex items-center justify-center w-full h-full min-h-[320px] overflow-visible"
+      className="flex items-center justify-center w-full h-full min-h-[160px] md:min-h-[480px] overflow-visible"
+      style={{ isolation: "isolate" }}
       data-name="hero-flows-illustration"
     >
+      <div
+        className="block md:hidden w-full h-[160px] overflow-visible"
+        aria-hidden
+      >
+        <img
+          src={mobileFlowUrl}
+          alt=""
+          className="block w-full h-full object-contain object-center origin-center scale-[6]"
+          style={{ mixBlendMode: "hard-light" }}
+          loading="eager"
+          decoding="async"
+        />
+      </div>
       <svg
-        className="w-full min-w-[1440px] h-auto max-h-[2240px] sm:max-h-[2720px]"
+        className="hidden md:block w-full min-w-0 md:min-w-[1440px] h-auto max-h-[2240px] sm:max-h-[2720px]"
         viewBox="0 0 1440 1023"
         fill="none"
         preserveAspectRatio="xMidYMid meet"
       >
-        <defs>
-          {HERO_FLOWS_PATHS.map(({ stroke }, i) => {
-            const isLeft = i < 7;
-            const dur = FLOW_SHINE_DURATIONS[i];
-            const delay = FLOW_SHINE_DELAYS[i];
-            const gradId = `flowShine-${i}`;
-            return (
-              <linearGradient
-                key={gradId}
-                id={gradId}
-                gradientUnits="objectBoundingBox"
-                x1={isLeft ? 0 : 1}
-                x2={isLeft ? 1 : 0}
-                y1={0.5}
-                y2={0.5}
-              >
-                <stop offset="0" stopColor="white" stopOpacity="0" />
-                <stop offset="0.08" stopColor="white" stopOpacity="0">
-                  <animate attributeName="offset" values="0.08;0.48" dur={`${dur}s`} repeatCount="indefinite" begin={`${delay}s`} />
-                </stop>
-                <stop offset="0.14" stopColor="red" stopOpacity={0.5}>
-                  <animate attributeName="offset" values="0.14;0.54" dur={`${dur}s`} repeatCount="indefinite" begin={`${delay}s`} />
-                </stop>
-                <stop offset="0.5" stopColor="red" stopOpacity={0.5}>
-                  <animate attributeName="offset" values="0.5;0.9" dur={`${dur}s`} repeatCount="indefinite" begin={`${delay}s`} />
-                </stop>
-                <stop offset="0.86" stopColor="red" stopOpacity={0.5}>
-                  <animate attributeName="offset" values="0.86;0.46" dur={`${dur}s`} repeatCount="indefinite" begin={`${delay}s`} />
-                </stop>
-                <stop offset="0.92" stopColor="white" stopOpacity="0">
-                  <animate attributeName="offset" values="0.92;0.52" dur={`${dur}s`} repeatCount="indefinite" begin={`${delay}s`} />
-                </stop>
-                <stop offset="1" stopColor="white" stopOpacity="0" />
-              </linearGradient>
-            );
-          })}
-        </defs>
-        <g style={{ mixBlendMode: "hard-light" }}>
-          {HERO_FLOWS_PATHS.map(({ d, stroke, opacity }, i) => (
-            <g key={i} opacity={opacity}>
-              <path d={d} fill={stroke} />
-              <path d={d} fill={`url(#flowShine-${i})`} />
-            </g>
-          ))}
-        </g>
+        {HERO_FLOWS_PATHS.map(({ d, stroke, opacity }, i) => (
+          <g key={i} opacity={opacity} style={{ mixBlendMode: "hard-light" }}>
+            <path d={d} fill={stroke} />
+          </g>
+        ))}
         <circle cx="720" cy="511.5" r="5.5" fill="white" stroke="#08344C" strokeWidth={5} />
       </svg>
     </div>
@@ -138,7 +144,17 @@ function HeroFlowsSlot() {
 
 function HeroGapWithFlows() {
   return (
-    <div className="relative w-screen max-w-none left-1/2 -translate-x-1/2 h-[304px] overflow-visible" data-name="hero-gap-with-flows">
+    <div
+      className="relative max-w-none h-[160px] md:h-[456px] overflow-visible"
+      style={{
+        width: "100vw",
+        // A szülő px-éből adódó eltérést korrigáljuk, így a flow tényleg a viewport közepén marad,
+        // miközben a dokumentum szélességét az outer container `overflow-x-hidden` kezeli.
+        marginLeft: "calc(50% - 50vw)",
+        marginRight: "calc(50% - 50vw)",
+      }}
+      data-name="hero-gap-with-flows"
+    >
       <HeroFlowsSlot />
     </div>
   );
@@ -161,7 +177,7 @@ function HeroBlock3() {
 function HeroWrapper() {
   return (
     <div
-      className="relative flex flex-col items-center pt-12 pb-16 md:pt-16 md:pb-20 w-full max-w-full px-4"
+      className="relative flex flex-col items-center pt-8 pb-8 md:pt-16 md:pb-20 w-full max-w-full px-4"
       data-name="hero-wrapper"
     >
       <HeroLogoBlock />
@@ -380,7 +396,7 @@ function Flows() {
 
 function Frame() {
   return (
-    <div className="bg-[#08344c] min-h-[100svh] md:min-h-[1213px] overflow-clip relative shrink-0 w-full max-w-full mx-auto z-[4] flex flex-col items-center">
+    <div className="bg-[#08344c] min-h-[100svh] md:min-h-[1213px] overflow-x-hidden overflow-y-visible md:overflow-clip relative shrink-0 w-full max-w-full mx-auto z-[4] flex flex-col items-center">
       <div className="absolute bottom-0 left-0 pointer-events-none top-0 h-full min-h-[100svh] md:min-h-[1213px] w-full">
         <Head />
       </div>
@@ -408,8 +424,10 @@ function Logo() {
 function Menu() {
   return (
     <div className="content-stretch flex h-full items-end opacity-60 pt-[11px] relative shrink-0" data-name="menu">
-      <div className="flex flex-col font-['Be Vietnam Pro',sans-serif] font-normal h-full justify-center leading-[0] not-italic relative shrink-0 text-[13px] text-white tracking-[-0.52px] w-[483px]">
-        <p className="leading-[normal] whitespace-pre-wrap">Integrate. Centralize. Simplify</p>
+      <div className="flex flex-col font-['Be Vietnam Pro',sans-serif] font-normal h-full justify-center leading-[0] not-italic relative shrink-0 text-[13px] sm:text-[13px] text-white tracking-[-0.52px] w-[483px]">
+        <p className="leading-[normal] whitespace-pre-wrap inline-flex items-baseline">
+          <span>Integrate.</span><span>Centralize.</span><span>Simplify</span>
+        </p>
       </div>
     </div>
   );
@@ -421,44 +439,72 @@ function Spacer() {
 
 function Cta1() {
   return (
-    <div className="bg-white content-stretch flex flex-col items-center justify-center p-[12px] relative rounded-[2px] shrink-0 transition-all duration-300 hover:bg-[#FD8551] hover:scale-110 cursor-pointer" data-name="cta">
-      <p className="font-['Rajdhani',sans-serif] font-bold leading-[normal] not-italic relative shrink-0 text-[14px] text-black tracking-[0.28px] uppercase">BOOK A MEETING</p>
-    </div>
+    <a
+      className="bg-white content-stretch flex flex-col items-center justify-center p-[12px] relative rounded-[2px] shrink-0 transition-all duration-300 hover:bg-[#FD8551] hover:scale-110 cursor-pointer"
+      data-name="cta"
+      href={CONTACT_HREF}
+    >
+      <p className="font-['Rajdhani',sans-serif] font-bold leading-[normal] not-italic relative shrink-0 text-[14px] text-black tracking-[0.28px] uppercase">CONTACT US</p>
+    </a>
   );
 }
 
 function Head1() {
   const [isVisible, setIsVisible] = useState(false);
-  
+  const heroInView = useRef(true);
+  const footerInView = useRef(false);
+
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      // Show header when scrolled past the hero section (~1200px)
-      // Hide when scrolling back up into the hero section
-      if (scrollY > 1200) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
+    const hero = document.getElementById("hero-contact-cta");
+    const footer = document.getElementById("footer-contact-cta");
+    if (!hero || !footer) return;
+
+    const sync = () => {
+      setIsVisible(!heroInView.current && !footerInView.current);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const applyRects = () => {
+      const vh = window.innerHeight;
+      const hr = hero.getBoundingClientRect();
+      const fr = footer.getBoundingClientRect();
+      heroInView.current = hr.bottom > 0 && hr.top < vh;
+      footerInView.current = fr.bottom > 0 && fr.top < vh;
+      sync();
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.target === hero) heroInView.current = entry.isIntersecting;
+          if (entry.target === footer) footerInView.current = entry.isIntersecting;
+        }
+        sync();
+      },
+      { threshold: 0, root: null, rootMargin: "0px" },
+    );
+
+    io.observe(hero);
+    io.observe(footer);
+    applyRects();
+
+    return () => io.disconnect();
   }, []);
 
   return (
     <div
-      className={`bg-[#08344c] shrink-0 sticky w-full z-[3] transition-transform duration-500 ease-in-out ${
-        isVisible ? 'top-0 translate-y-0' : '-top-[100px] -translate-y-full'
+      className={`fixed left-0 right-0 top-0 z-[50] bg-[#08344c] w-full transition-transform duration-500 ease-in-out ${
+        isVisible ? "translate-y-0" : "-translate-y-full pointer-events-none"
       }`}
       data-name="head"
     >
-      <div className="flex flex-col sm:flex-row items-center justify-center w-full max-w-[1600px] mx-auto px-4 py-4 sm:px-[56px] sm:py-[24px] gap-4 sm:gap-0 min-w-0">
-        <Logo />
-        <div className="hidden sm:flex flex-row items-center self-stretch sm:ml-12 min-w-0">
-          <Menu />
+      <div className="flex items-center w-full max-w-[1600px] mx-auto px-4 py-4 sm:px-[56px] sm:py-[24px] min-w-0">
+        <div className="flex items-center min-w-0">
+          <Logo />
+          <div className="hidden sm:flex items-center ml-12 min-w-0">
+            <Menu />
+          </div>
         </div>
-        <Spacer />
+        <div className="flex-1 min-w-0" />
         <Cta1 />
       </div>
     </div>
@@ -495,7 +541,12 @@ function Txt() {
         <p className="leading-[32px] whitespace-pre-wrap">One normalized data layer</p>
       </div>
       <p className="font-['Be Vietnam Pro',sans-serif] font-normal leading-[24px] relative shrink-0 text-[#08344c] text-[16px] tracking-[-0.32px] w-full whitespace-pre-wrap">Rise reconciles inconsistent data from multiple systems, giving every tool a shared structure without changing how they work.</p>
-      <p className="decoration-solid font-['Be Vietnam',sans-serif] font-semibold leading-[23px] relative shrink-0 text-[#426d84] text-[13px] underline w-full whitespace-pre-wrap cursor-pointer transition-colors duration-300 hover:text-[#FD8551]">Learn more, book a meeting</p>
+      <a
+        className="decoration-solid font-['Be Vietnam',sans-serif] font-semibold leading-[23px] relative shrink-0 text-[#426d84] text-[13px] underline w-full whitespace-pre-wrap cursor-pointer transition-colors duration-300 hover:text-[#FD8551]"
+        href={CONTACT_HREF}
+      >
+        Learn more, contact us
+      </a>
     </div>
   );
 }
@@ -546,7 +597,12 @@ function Txt1() {
         <p className="leading-[32px] whitespace-pre-wrap">Unified operational view</p>
       </div>
       <p className="font-['Be Vietnam Pro',sans-serif] font-normal leading-[24px] relative shrink-0 text-[#08344c] text-[16px] tracking-[-0.32px] w-full whitespace-pre-wrap">Rise generates a single, real-time view across all connected tools — allowing teams to see, understand, and act from one place</p>
-      <p className="decoration-solid font-['Be Vietnam',sans-serif] font-semibold leading-[23px] relative shrink-0 text-[#426d84] text-[13px] underline w-full whitespace-pre-wrap cursor-pointer transition-colors duration-300 hover:text-[#FD8551]">Learn more, book a meeting</p>
+      <a
+        className="decoration-solid font-['Be Vietnam',sans-serif] font-semibold leading-[23px] relative shrink-0 text-[#426d84] text-[13px] underline w-full whitespace-pre-wrap cursor-pointer transition-colors duration-300 hover:text-[#FD8551]"
+        href={CONTACT_HREF}
+      >
+        Learn more, contact us
+      </a>
     </div>
   );
 }
@@ -612,7 +668,12 @@ function Txt2() {
         <p className="leading-[32px] whitespace-pre-wrap">Logic and workflows aligned</p>
       </div>
       <p className="font-['Be Vietnam Pro',sans-serif] font-normal leading-[24px] relative shrink-0 text-[#08344c] text-[16px] tracking-[-0.32px] w-full whitespace-pre-wrap">Each system keeps its role, but Rise translates their logic into one coherent operational model that eliminates duplication.</p>
-      <p className="decoration-solid font-['Be Vietnam',sans-serif] font-semibold leading-[23px] relative shrink-0 text-[#426d84] text-[13px] underline w-full whitespace-pre-wrap cursor-pointer transition-colors duration-300 hover:text-[#FD8551]">Learn more, book a meeting</p>
+      <a
+        className="decoration-solid font-['Be Vietnam',sans-serif] font-semibold leading-[23px] relative shrink-0 text-[#426d84] text-[13px] underline w-full whitespace-pre-wrap cursor-pointer transition-colors duration-300 hover:text-[#FD8551]"
+        href={CONTACT_HREF}
+      >
+        Learn more, contact us
+      </a>
     </div>
   );
 }
@@ -667,7 +728,12 @@ function Txt3() {
         <p className="leading-[32px] whitespace-pre-wrap">Fewer tools, less complexity</p>
       </div>
       <p className="font-['Be Vietnam Pro',sans-serif] font-normal leading-[24px] relative shrink-0 text-[#08344c] text-[16px] tracking-[-0.32px] w-full whitespace-pre-wrap">By centralizing data and logic, Rise reduces the need for overlapping tools — lowering complexity without forcing teams to change how they work.</p>
-      <p className="decoration-solid font-['Be Vietnam',sans-serif] font-semibold leading-[23px] relative shrink-0 text-[#426d84] text-[13px] underline w-full whitespace-pre-wrap cursor-pointer transition-colors duration-300 hover:text-[#FD8551]">Learn more, book a meeting</p>
+      <a
+        className="decoration-solid font-['Be Vietnam',sans-serif] font-semibold leading-[23px] relative shrink-0 text-[#426d84] text-[13px] underline w-full whitespace-pre-wrap cursor-pointer transition-colors duration-300 hover:text-[#FD8551]"
+        href={CONTACT_HREF}
+      >
+        Learn more, contact us
+      </a>
     </div>
   );
 }
@@ -763,7 +829,7 @@ function Frame4() {
   }, []);
 
   return (
-    <div className="content-stretch flex flex-col font-['Be Vietnam Pro',sans-serif] font-light items-center justify-center leading-[normal] pb-6 sm:pb-[24px] relative shrink-0 text-[40px] sm:text-[80px] w-full -space-y-3 sm:-space-y-[24px]">
+    <div className="content-stretch flex flex-col font-['Be Vietnam Pro',sans-serif] font-light items-center justify-center leading-[normal] pb-6 sm:pb-[24px] relative shrink-0 text-[56px] sm:text-[80px] w-full -space-y-2 sm:-space-y-[24px]">
       {RTB_WORDS.map((label, i) => {
         const level = Math.min(5, Math.abs(i - centerIndex) + 1);
         const color = RTB_LEVEL_COLORS[level - 1];
@@ -788,6 +854,64 @@ function Rtb() {
       <Frame2 />
       <Frame4 />
     </div>
+  );
+}
+
+function TechStack() {
+  return (
+    <section
+      className="relative shrink-0 w-full z-[2] flex justify-center bg-[#08344c]"
+      data-name="Tech stack"
+      aria-labelledby="tech-stack-heading"
+    >
+      <div className="flex w-full max-w-[1600px] flex-col items-center px-4 pt-[60px] pb-[120px]">
+        <p
+          id="tech-stack-heading"
+          className="font-['Be Vietnam Pro',sans-serif] text-sm font-normal text-[#7EA8BE]"
+        >
+          Tech stack
+        </p>
+            <div className="mt-[48px] w-full overflow-x-auto">
+          <ul className="flex min-w-max list-none flex-nowrap items-center gap-[21px] p-0 justify-start md:gap-[42px] md:justify-center">
+            {TECH_STACK_ITEMS.map(({ src, alt }, i) => {
+              const href = TECH_STACK_URLS[i];
+              const img = (
+                <img
+                  src={src}
+                  alt={alt}
+                className="h-8 w-auto max-h-8 max-w-[min(100vw-2rem,220px)] object-contain scale-[0.75] md:scale-100 brightness-0 invert transition-[filter] duration-300 group-hover:brightness-100 group-hover:invert-0"
+                  loading="lazy"
+                  decoding="async"
+                />
+              );
+              const shellClass =
+                "group inline-flex items-center justify-center outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#08344c] rounded-sm";
+
+              if (href) {
+                return (
+                  <li key={alt} className="flex-none">
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`${shellClass} cursor-pointer`}
+                    >
+                      {img}
+                    </a>
+                  </li>
+                );
+              }
+
+              return (
+                <li key={alt} className="flex-none">
+                  <span className={`${shellClass} cursor-default`}>{img}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -816,9 +940,14 @@ function Frame5() {
 
 function Cta3() {
   return (
-    <div className="bg-white content-stretch flex flex-col items-center justify-center p-[12px] relative rounded-[2px] shrink-0 transition-all duration-300 hover:bg-[#FD8551] hover:scale-110 cursor-pointer" data-name="cta">
+    <a
+      id="footer-contact-cta"
+      className="bg-white content-stretch flex flex-col items-center justify-center p-[12px] relative rounded-[2px] shrink-0 transition-all duration-300 hover:bg-[#FD8551] hover:scale-110 cursor-pointer"
+      data-name="cta"
+      href={CONTACT_HREF}
+    >
       <p className="font-['Rajdhani',sans-serif] font-bold leading-[normal] not-italic relative shrink-0 text-[14px] text-black tracking-[0.28px] uppercase">contact us</p>
-    </div>
+    </a>
   );
 }
 
@@ -860,7 +989,9 @@ function Foot() {
             </p>
           </div>
           <div className="flex flex-col justify-center opacity-40 relative shrink-0">
-            <p className="leading-[normal]">Integrate. Centralize. Simplify.</p>
+            <p className="leading-[normal] text-[16px] sm:text-[13px] font-['Be Vietnam Pro',sans-serif] flex flex-row items-baseline whitespace-nowrap">
+              <span>Integrate.</span><span>Centralize.</span><span>Simplify.</span>
+            </p>
           </div>
         </div>
       </div>
@@ -872,6 +1003,7 @@ export default function Desktop() {
   return (
     <div className="bg-[#08344c] content-stretch flex flex-col isolate items-center relative size-full" data-name="Desktop - 7">
       <Frame />
+      <TechStack />
       <Features />
       <Cta2 />
       <Foot />
